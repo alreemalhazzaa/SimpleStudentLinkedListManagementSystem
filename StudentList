@@ -1,0 +1,139 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class linklist {
+private:
+    struct node {
+        string name;
+        node* link;
+    } *p;
+
+public:
+    linklist();
+    void append(string name);
+    void addatbeg(string name);
+    void addafter(int loc, string name);
+    void display();
+    int count();
+    void del(string name);
+    ~linklist();
+};
+
+linklist::linklist() {
+    p = NULL;
+}
+
+void linklist::append(string name) {
+    node *temp, *r;
+    if (p == NULL) {
+        temp = new node;
+        temp->name = name;
+        temp->link = NULL;
+        p = temp;
+    } else {
+        temp = p;
+        while (temp->link != NULL)
+            temp = temp->link;
+        r = new node;
+        r->name = name;
+        r->link = NULL;
+        temp->link = r;
+    }
+}
+
+void linklist::addatbeg(string name) {
+    node* temp = new node;
+    temp->name = name;
+    temp->link = p;
+    p = temp;
+}
+
+void linklist::addafter(int loc, string name) {
+    node* temp = p;
+    for (int i = 0; i < loc - 1; i++) {
+        if (temp == NULL) {
+            cout << "\nYou cant add the student after " << loc 
+                 << " because there is less than " << loc 
+                 << " Students in this list" << endl;
+            return;
+        }
+        temp = temp->link;
+    }
+    
+    node* m = new node;
+    m->name = name;
+    m->link = temp->link;
+    temp->link = m;
+}
+
+void linklist::display() {
+    node* temp = p;
+    while (temp != NULL) {
+        cout << temp->name << " ";
+        temp = temp->link;
+    }
+    cout << endl;
+}
+
+int linklist::count() {
+    int c = 0;
+    node* temp = p;
+    while (temp != NULL) {
+        c++;
+        temp = temp->link;
+    }
+    return c;
+}
+
+void linklist::del(string name) {
+    node *old, *temp = p;
+    while (temp != NULL) {
+        if (temp->name == name) {
+            if (temp == p) {
+                p = temp->link;
+            } else {
+                old->link = temp->link;
+            }
+            delete temp;
+            return;
+        }
+        old = temp;
+        temp = temp->link;
+    }
+    cout << "Student " << name << " not found" << endl;
+}
+
+linklist::~linklist() {
+    node* q;
+    while (p != NULL) {
+        q = p->link;
+        delete p;
+        p = q;
+    }
+}
+
+int main() {
+    linklist students;
+
+    students.append("Noura");
+    students.append("Sarah");
+    students.addatbeg("Reem");
+    students.addafter(2, "Shahd");
+    
+    // adding after a position that doesn't exist
+    students.addafter(7, "Rneem");
+
+    cout << "Student list: ";
+    students.display();
+
+    cout << "Total students: " << students.count() << endl;
+
+    students.del("Reem");
+    cout << "Student list: ";
+    students.display();
+    students.del("Rneem");
+
+    return 0;
+}
